@@ -1,7 +1,7 @@
 
 import sys
 
-MAX_CACHE_SIZE = 1
+MAX_CACHE_SIZE = 1000
 
 
 class SingletonMeta(type):
@@ -9,7 +9,7 @@ class SingletonMeta(type):
 
     def __call__(cls, *args, **kwds):
         if cls not in cls._instances:
-            instance = super()._call__(*args, **kwds)
+            instance = super().__call__(*args, **kwds)
             cls._instances[cls] = instance
         return cls._instances[cls]
 
@@ -24,7 +24,7 @@ class PieCacheManager(metaclass=SingletonMeta):
         if size_mb > MAX_CACHE_SIZE:
             return "Max Cache Size Exceeded"
         else:
-            self.main_cache[str]=value
+            self.main_cache[key]=value
             return 'ok'
     
     def get_cache_item(self, key:str):
@@ -33,3 +33,7 @@ class PieCacheManager(metaclass=SingletonMeta):
             return "Not Found"
         else:
             return item
+    
+    def del_item_cache(self, key:str):
+        if key in self.main_cache:
+            del self.main_cache[key]

@@ -27,13 +27,6 @@ resp = client.recv(4096)
 
 print(resp.decode())
 
-desc = client.detach()
-
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-
-client.connect((target_host,target_port))
-
 
 client.send("get a12".encode())
 

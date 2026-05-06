@@ -14,8 +14,11 @@ async def cache_worker(reader, writer):
     try:
         while True:
             data = await reader.read(1024)
-            message = data.decode()
+            if not data:
+                print(f"Client {addr} disconnected")
+                break
 
+            message = data.decode()
             pat = '(get|put|del) ([A-Za-z0-9].*)'
             match = re.search(pat, message)
             res=""
@@ -37,10 +40,10 @@ async def cache_worker(reader, writer):
                 writer.write(res.encode())
 
             else:
-                print("what the helly")
                 writer.write("Invalid Query")
 
                 await writer.drain()
+
     except ConnectionResetError:
         print(f"Connection Reset by client {addr}")
     finally:

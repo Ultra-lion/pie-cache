@@ -20,16 +20,29 @@ class PieCacheManager(metaclass=SingletonMeta):
         self.cache_size_bytes=0
     
     def set_cache_item(self, key: str, value: str):
+        
         key_size = sys.getsizeof(key)
-        val_size = sys.getsizeof(value)
-        self.cache_size_bytes+=(key_size+val_size)
+        old_val = self.main_cache.get(key)
+        old_val_size=None
+        if old_val is not None:
+            old_val_size = sys.getsizeof(old_val)
+            self.cache_size_bytes-=(key_size+old_val_size)
 
+        val_size = sys.getsizeof(value)
+
+        self.cache_size_bytes+=(key_size+val_size)
         size_mb = self.cache_size_bytes/(1024*1024)
+
         if size_mb > MAX_CACHE_SIZE:
+            self.cache_size_bytes-=(key_size+val_size)
+
+            if old_val_size is not None:
+                self.cache_size_bytes+=(key_size+old_val_size)
+
             return "Max Cache Size Exceeded"
-        else:
-            self.main_cache[key]=value
-            return 'ok'
+        
+        self.main_cache[key]=value
+        return 'ok'
     
     def get_cache_item(self, key:str):
         item = self.main_cache.get(key,None)

@@ -37,12 +37,13 @@ async def cache_worker(reader, writer):
                     res = "Done"
 
 
-                writer.write(res.encode())
+                
 
             else:
-                writer.write("Invalid Query")
-
-                await writer.drain()
+                res = "Invalid Query"
+                
+            writer.write(res.encode())
+            await writer.drain()
 
     except ConnectionResetError:
         print(f"Connection Reset by client {addr}")

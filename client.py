@@ -1,5 +1,5 @@
 import socket 
-
+import time
 
 target_host = '127.0.0.1'
 target_port = 9876
@@ -27,6 +27,7 @@ resp = client.recv(4096)
 
 print(resp.decode())
 
+time.sleep(4)
 
 client.send("get a12".encode())
 
